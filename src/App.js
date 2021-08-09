@@ -8,11 +8,11 @@ class  App extends React.Component {
   }
 
   add = () => {
-    this.setState({count:1})
+    this.setState(current => ({count: this.state.count+1 }))
   }
 
   minus = () => {
-    this.setState({count:-1})
+    this.setState(current => ({count: this.state.count-1 }))
   }
 
   render(){  //react는 자동적으로 render실행
