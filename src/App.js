@@ -1,27 +1,59 @@
 import React from 'react';
-import PropTypes from "prop-types";
-import { isConstructorDeclaration } from 'typescript';
+// import PropTypes from "prop-types";
+import axios from 'axios';
+import Movie from './Movie'
+import './App.css'
 
 class  App extends React.Component {
-  state={
-    count:0
+  state = {
+    isLoading: true,
+    movies : []
   }
 
-  add = () => {
-    this.setState(current => ({count: this.state.count+1 }))
+  getMovies = async() => {
+    const {
+      data: {
+        data: { movies }
+      }} = await  axios.get("https://yts-proxy.now.sh/list_movies.json?sort_by=rating")
+    // console.log(movies.data.data.movies)
+    // console.log(movies)
+    this.setState({ movies, isLoading: false})
   }
-
-  minus = () => {
-    this.setState(current => ({count: this.state.count-1 }))
+    //movies배열에 영화 list넣은 후 loading 완료 -> wer'e ready
+    //this.setState({ movies : movies})  setState의 movies : axios의 movies
+  
+  /*async*/ componentDidMount() {
+    this.getMovies()
+    // const movies = await  axios.get("https://yts.mx/api/v2/list_movies.json")
   }
-
+  
   render(){  //react는 자동적으로 render실행
+    const {isLoading, movies} = this.state
+    // const {isLoading} = this.state
+    // <div>{ isLoading ? "Loading..." : this.movies.state.state.movies }</div>
     return (
-    <div>
-      <h1>count :  {this.state.count}</h1>
-      <button onClick= {this.add}> add </button>
-      <button onClick= {this.minus}> minus </button>
-    </div>)
+      <section class="container">
+      <div>{ isLoading 
+      ? <div class="loader"><span class="loader__text">Loading...</span> </div> 
+      : <div class="movies">
+        {
+          movies.map(movie =>
+            {console.log(movie)
+            return <Movie
+              key={movie.id}
+              id={movie.id}
+              year={movie.year}
+              title={movie.title}
+              summary={movie.summary}
+              poster={movie.medium_cover_image}
+              genres={movie.genres}
+            />
+            }
+          )
+        }
+      </div>
+      }</div>
+  </section>)
   }
 }
 
